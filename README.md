@@ -23,5 +23,7 @@ The scan is automatic; publishing a lead as a fully specified car card is still 
 - `index.html` — page structure
 - `style.css` — responsive visual design
 - `app.js` — catalogue and brand rendering
+- `assets/cars/` — locally stored manufacturer press images used by car cards
+- `IMAGE-CREDITS.md` — image sources and credit notes
 - `scripts/scan-news.mjs` — scheduled RSS discovery job
 - `.github/workflows/scan-news.yml` — six-hour GitHub Actions schedule
