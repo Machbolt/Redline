@@ -1,6 +1,6 @@
 # Redline
 
-An editorial prototype for tracking sports car, supercar, and hypercar reveals. The feed cutoff is the Bugatti Destrier announcement on August 6, 2026. Entries before the cutoff are excluded.
+An editorial prototype for tracking sports car, supercar, and hypercar reveals. The feed cutoff is the Bugatti Destrier announcement on August 6, 2026. The Destrier stays in the catalogue as the cutoff marker. The Hennessey Blackbird is retained as an explicitly labeled, user-requested pre-cutoff exception.
 
 ## Run locally
 
@@ -16,7 +16,7 @@ Open `index.html` in a browser. No build step or dependencies are required.
 
 GitHub Actions scans Top Gear, Car and Driver, Autocar, and Road & Track RSS feeds every six hours. It filters for performance-car leads published after the cutoff, deduplicates them, and commits them to `data/discovery-queue.json` for review.
 
-The scan is automatic; publishing a lead as a fully specified car card is still curated in `app.js`. RSS headlines do not reliably provide launch dates or verified specifications, so the queue is not treated as confirmed cars. Enable Actions in the GitHub repository if scheduled runs are paused.
+The scan is automatic; publishing a lead as a fully specified car card is still curated in `app.js`. RSS headlines do not reliably provide launch dates or verified specifications, so the queue is not treated as confirmed cars. The catalogue is append-only by convention: add entries to the `cars` array; do not replace it when adding new launches. Enable Actions in the GitHub repository if scheduled runs are paused.
 
 ## Files
 
