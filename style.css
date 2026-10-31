@@ -2,3 +2,11 @@
 :root{--bg:#11110f;--panel:#1a1a17;--line:#363630;--muted:#a3a39a;--cream:#f1efe5;--orange:#ff5b36;--mono:'DM Mono',monospace;--sans:'Manrope',sans-serif}
 :root{--bg:#11110f;--panel:#1a1a17;--line:#363630;--muted:#a3a39a;--cream:#f1efe5;--orange:#ff5b36;--mono:'DM Mono',monospace;--sans:'Manrope',sans-serif}
 .car-image.has-photo:before,.car-image.has-photo:after{display:none}.car-photo{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;object-position:center}.car-image.has-photo{background:#222;}
+.photo-open{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;background:transparent;cursor:zoom-in;}
+.photo-open:focus-visible{outline:2px solid var(--orange);outline-offset:-4px;z-index:1;}
+.photo-dialog{position:fixed;width:fit-content;max-width:min(94vw,1200px);max-height:92vh;padding:14px;border:1px solid #55554b;background:#11110f;color:var(--cream);box-shadow:0 20px 80px #000b;overflow:hidden;}
+.photo-dialog::backdrop{background:#050504e8;backdrop-filter:blur(5px);}
+.photo-dialog img{display:block;max-width:calc(min(94vw,1200px) - 30px);max-height:calc(88vh - 70px);width:auto;height:auto;object-fit:contain;margin:0 auto;}
+.photo-dialog p{margin:12px 0 0;font:10px var(--mono);letter-spacing:.1em;color:#b8b8ae;}
+.photo-dialog-close{position:absolute;z-index:2;top:22px;right:22px;width:38px;height:38px;border:1px solid #ffffff55;background:#11110fcc;color:var(--cream);font-size:25px;line-height:1;cursor:pointer;}
+.photo-dialog-close:hover{background:var(--orange);border-color:var(--orange);color:#161410;}
