@@ -11,5 +11,6 @@ These local image files were retrieved from official manufacturer press pages or
 | `assets/cars/spyker-preliator.webp` | Spyker C8 Preliator XXV Coupé | https://spykercars.com/news/spyker-c8-preliator-xxv-coup--146-years-in-the-making-a-new-era-begins |
 | `assets/cars/gordon-murray-s1.jpg` | Gordon Murray S1 | https://www.gordonmurray.com/press/gordon-murray-reveals-s1 |
 | `assets/cars/koenigsegg-ccgt1.jpg` | Koenigsegg CCGT1 | https://news.cision.com/koenigsegg/r/the-new-koenigsegg-ccgt1,c4382728 |
+| `assets/cars/mclaren-mcl-6gt.png` | McLaren McL 6GT | Image supplied by the user |
 
 The site uses these images for editorial identification and links each car card to its source. Check the relevant source's current media terms before reusing the files outside this project.
