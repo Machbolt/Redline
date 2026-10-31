@@ -12,11 +12,9 @@ Open `index.html` in a browser. No build step or dependencies are required.
 - Each car's specifications should be verified against a manufacturer announcement before publication.
 - Unknown specifications should remain marked as undisclosed.
 
-## Automatic discovery
+## News updates
 
-GitHub Actions scans Top Gear, Car and Driver, Autocar, and Road & Track RSS feeds every six hours. It filters for performance-car leads published after the cutoff, deduplicates them, and commits them to `data/discovery-queue.json` for review.
-
-The scan is automatic; publishing a lead as a fully specified car card is still curated in `app.js`. RSS headlines do not reliably provide launch dates or verified specifications, so the queue is not treated as confirmed cars. The catalogue is append-only by convention: add entries to the `cars` array; do not replace it when adding new launches. Enable Actions in the GitHub repository if scheduled runs are paused.
+Automatic news scanning is currently disabled. The scanner source remains in `scripts/scan-news.mjs` for possible future use, but there is no active GitHub Actions workflow to run it. New confirmed car entries are currently added by editing `app.js`.
 
 ## Files
 
@@ -26,4 +24,3 @@ The scan is automatic; publishing a lead as a fully specified car card is still 
 - `assets/cars/` — locally stored manufacturer press images used by car cards
 - `IMAGE-CREDITS.md` — image sources and credit notes
 - `scripts/scan-news.mjs` — scheduled RSS discovery job
-- `.github/workflows/scan-news.yml` — six-hour GitHub Actions schedule
