@@ -1,6 +1,6 @@
 # Redline
 
-I built Redline to track sports car, supercar, and hypercar reveals. My feed starts after the Bugatti Destrier announcement on August 6, 2026; I keep the Destrier in the catalogue as the cutoff marker. I also keep the Hennessey Blackbird as an exception because I wanted it included despite its earlier reveal.
+I built Redline to track sports car, supercar, and hypercar reveals. My feed starts after the Hennessey Blackbird announcement on August 3, 2026; I keep the Blackbird in the catalogue as the cutoff marker. The Bugatti Destrier and later qualifying reveals stay in the feed.
 
 ## Run locally
 

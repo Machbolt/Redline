@@ -19,6 +19,7 @@ These local image files were collected from manufacturer press materials, manufa
 | `assets/cars/eccentrica-v12-roadster.jpg` | Eccentrica V12 Roadster | https://eccentrica.com/press/roadsterunveil/ |
 | `assets/cars/marc-philipp-gemballa-marsien-gt.jpg` | Marc Philipp Gemballa Marsien GT | https://marcphilippgemballa.com/marsiengt/ |
 | `assets/cars/brabus-bodo-cabriolet.jpg` | BRABUS BODO Cabriolet | https://www.brabus.com/en-int/brand/news/brabus-bodo-cabriolet.html |
+| `assets/cars/ferrari-cz26.jpg` | Ferrari CZ26 | Official Ferrari reveal video thumbnail: https://www.youtube.com/watch?v=wakpTuzq2rI |
 
 The site uses these images for editorial identification and links each car card to its source. Manufacturer names and images remain the property of their respective owners. Check the relevant source's current media terms before reusing the files outside this project.
 
