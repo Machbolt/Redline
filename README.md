@@ -2,6 +2,11 @@
 
 I built Redline to track sports car, supercar, and hypercar reveals. My feed starts after the Hennessey Blackbird announcement on August 3, 2026; I keep the Blackbird in the catalogue as the cutoff marker. The Bugatti Destrier and later qualifying reveals stay in the feed.
 
+## Credits
+
+- Created by **Josiah Kanuparthi**.
+- Car photos and their source attributions are listed in [IMAGE-CREDITS.md](IMAGE-CREDITS.md). Photos I supplied are identified there; manufacturer names and press images remain the property of their respective owners.
+
 ## Run locally
 
 Open `index.html` in a browser. No build step or dependencies are required.
