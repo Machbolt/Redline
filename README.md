@@ -19,7 +19,9 @@ Open `index.html` in a browser. No build step or dependencies are required.
 
 ## News updates
 
-I have disabled automatic news scanning. The scanner source remains in `scripts/scan-news.mjs` in case I want to use it in the future, but there is no active GitHub Actions workflow. I add confirmed car entries by editing `app.js`.
+The RSS discovery job runs every six hours and can also be started manually. It runs in a Docker container as a non-root user, with a read-only container filesystem and write access only to a temporary output folder. The workflow token has read-only repository access and is not passed into the container. It does not commit changes or edit the car catalogue.
+
+The job validates the feed response type, size, UTF-8 encoding, final redirect domain, article URL domain, and record shape before saving leads. It records the SHA-256 hash and validation result for each downloaded feed in a manifest, and preserves the previous queue if every feed fails or the existing queue is invalid. The Node image and GitHub Actions are pinned to immutable digests/commit SHAs. Each run uploads a seven-day artifact with the queue and manifest for review; I add confirmed car entries by editing `app.js`.
 
 ## Files
 
