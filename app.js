@@ -32,3 +32,40 @@ const photoCaption=document.querySelector('#photo-caption');
 grid.addEventListener('click',event=>{const trigger=event.target.closest('.photo-open');if(!trigger)return;const photo=trigger.querySelector('img');expandedPhoto.src=photo.src;expandedPhoto.alt=photo.alt;photoCaption.textContent=trigger.dataset.caption;photoDialog.showModal();});
 document.querySelector('#photo-close').addEventListener('click',()=>photoDialog.close());
 photoDialog.addEventListener('click',event=>{if(event.target===photoDialog)photoDialog.close();});
+
+const coverageGrid=document.querySelector('#coverage-grid');
+const coverageStatus=document.querySelector('#coverage-status');
+const trustedSources={
+ 'Top Gear':['topgear.com'],
+ 'Car and Driver':['caranddriver.com'],
+ 'Autocar':['autocar.co.uk'],
+ 'Road & Track':['roadandtrack.com']
+};
+function isTrustedLead(lead){
+ if(!lead||typeof lead.title!=='string'||!lead.title.trim()||typeof lead.url!=='string'||typeof lead.source!=='string'||!Number.isFinite(Date.parse(lead.published)))return false;
+ try{
+  const url=new URL(lead.url);
+  const domains=trustedSources[lead.source];
+  return url.protocol==='https:'&&domains?.some(domain=>url.hostname===domain||url.hostname.endsWith(`.${domain}`));
+ }catch{return false;}
+}
+function renderCoverage(leads){
+ const recent=leads.filter(isTrustedLead).sort((a,b)=>Date.parse(b.published)-Date.parse(a.published)).slice(0,12);
+ coverageGrid.replaceChildren();
+ if(!recent.length){coverageStatus.textContent='No recent candidate stories yet. The weekly scan will add leads here when it finds them.';return;}
+ coverageStatus.textContent=`${recent.length} recent candidate ${recent.length===1?'story':'stories'} · stories are leads for review`;
+ for(const lead of recent){
+  const card=document.createElement('article');card.className='coverage-card';
+  const meta=document.createElement('div');meta.className='coverage-meta';
+  const source=document.createElement('span');source.textContent=lead.source.toUpperCase();
+  const date=document.createElement('time');date.dateTime=new Date(lead.published).toISOString();date.textContent=new Intl.DateTimeFormat(undefined,{year:'numeric',month:'short',day:'numeric'}).format(new Date(lead.published));
+  meta.append(source,date);
+  const link=document.createElement('a');link.href=lead.url;link.target='_blank';link.rel='noopener noreferrer';link.textContent=lead.title;link.setAttribute('aria-label',`${lead.title} — opens ${lead.source} in a new tab`);
+  const read=document.createElement('span');read.className='coverage-read';read.textContent='READ SOURCE ↗';
+  card.append(meta,link,read);coverageGrid.append(card);
+ }
+}
+fetch('data/discovery-queue.json',{cache:'no-store'})
+ .then(response=>{if(!response.ok)throw new Error(`HTTP ${response.status}`);return response.json();})
+ .then(leads=>{if(!Array.isArray(leads))throw new Error('Unexpected feed format');renderCoverage(leads);})
+ .catch(()=>{coverageStatus.textContent='Recent coverage could not be loaded. Please check back after the next scan.';});
