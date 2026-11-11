@@ -1,0 +1,68 @@
+name: News discovery
+
+on:
+  schedule:
+    - cron: '23 17 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: redline-news-discovery
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    name: Scan trusted RSS sources in isolation
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out source without persisting credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          submodules: false
+          lfs: false
+
+      - name: Prepare a temporary output directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/redline-news-output"
+          if [[ -f data/discovery-queue.json ]]; then
+            cp -- data/discovery-queue.json "$RUNNER_TEMP/redline-news-output/discovery-queue.json"
+          fi
+
+      - name: Build scanner from pinned Node image
+        run: docker build --pull --file scripts/Dockerfile --tag redline-news-scanner:local scripts
+
+      - name: Run scanner as an unprivileged container
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run \
+            --rm \
+            --init \
+            --read-only \
+            --user "$(id -u):$(id -g)" \
+            --cap-drop=ALL \
+            --security-opt=no-new-privileges \
+            --pids-limit=64 \
+            --memory=256m \
+            --cpus=1.0 \
+            --network=bridge \
+            --mount "type=bind,src=$RUNNER_TEMP/redline-news-output,dst=/workspace/data" \
+            redline-news-scanner:local
+
+      - name: Store validated leads for review
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: redline-discovery-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/redline-news-output/discovery-queue.json
+            ${{ runner.temp }}/redline-news-output/validation-manifest.json
+          if-no-files-found: warn
+          retention-days: 7
