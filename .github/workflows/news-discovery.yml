@@ -56,6 +56,23 @@ jobs:
             --mount "type=bind,src=$RUNNER_TEMP/redline-news-output,dst=/workspace/data" \
             redline-news-scanner:local
 
+      - name: Validate discovered leads before publishing
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -e '
+            type == "array" and length <= 250 and all(.[];
+              (.title | type == "string" and length > 0 and length <= 300) and
+              (.published | type == "string" and test("^20[0-9]{2}-[0-9]{2}-[0-9]{2}T")) and
+              (.source as $source | .url as $url |
+                ($source == "Top Gear" and ($url | test("^https://(www\\.)?topgear\\.com/"))) or
+                ($source == "Car and Driver" and ($url | test("^https://(www\\.)?caranddriver\\.com/"))) or
+                ($source == "Autocar" and ($url | test("^https://(www\\.)?autocar\\.co\\.uk/"))) or
+                ($source == "Road & Track" and ($url | test("^https://(www\\.)?roadandtrack\\.com/")))
+              )
+            )
+          ' "$RUNNER_TEMP/redline-news-output/discovery-queue.json" >/dev/null
+
       - name: Store validated leads for review
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -63,6 +80,50 @@ jobs:
           name: redline-discovery-${{ github.run_id }}
           path: |
             ${{ runner.temp }}/redline-news-output/discovery-queue.json
-            ${{ runner.temp }}/redline-news-output/validation-manifest.json
           if-no-files-found: warn
           retention-days: 7
+
+  publish:
+    name: Publish the site and weekly leads
+    needs: scan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out site files without persisting credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+          submodules: false
+          lfs: false
+
+      - name: Download validated leads from this scan
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: redline-discovery-${{ github.run_id }}
+          path: ${{ runner.temp }}/redline-news-output
+
+      - name: Assemble static Pages site
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p _site/data
+          cp index.html app.js style.css _site/
+          cp -R assets _site/assets
+          cp "$RUNNER_TEMP/redline-news-output/discovery-queue.json" _site/data/discovery-queue.json
+
+      - name: Upload the static site artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

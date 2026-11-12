@@ -9,7 +9,7 @@ I built Redline to track sports car, supercar, and hypercar reveals. My feed sta
 
 ## Run locally
 
-Open `index.html` in a browser. No build step or dependencies are required.
+Serve the project folder with a local web server to see both the catalogue and coverage leads. Opening `index.html` directly from disk will still show the catalogue, but browsers block the local JSON fetch used by the coverage section.
 
 ## Sources and verification
 
@@ -19,6 +19,9 @@ Open `index.html` in a browser. No build step or dependencies are required.
 
 ## News updates
 
+GitHub Actions runs the RSS scanner weekly and can also be started manually from the Actions tab. It runs in a restricted Docker container, validates the discovered lead URLs against the configured source domains, then deploys the site and the latest leads to GitHub Pages. The `Coverage leads` section is an automatically updated list of articles to review; it does not automatically create car cards or publish unverified specifications. I add confirmed car entries by editing `app.js` after checking manufacturer sources.
+
+For the deployment workflow to run, GitHub Pages must use **GitHub Actions** as its build and deployment source. Repository Actions settings must allow the pinned checkout, artifact download/upload, Pages artifact upload, and Pages deploy actions used in `.github/workflows/news-discovery.yml`.
 The RSS discovery job runs every six hours and can also be started manually. It runs in a Docker container as a non-root user, with a read-only container filesystem and write access only to a temporary output folder. The workflow token has read-only repository access and is not passed into the container. It does not commit changes or edit the car catalogue.
 
 The job validates the feed response type, size, UTF-8 encoding, final redirect domain, article URL domain, and record shape before saving leads. It records the SHA-256 hash and validation result for each downloaded feed in a manifest, and preserves the previous queue if every feed fails or the existing queue is invalid. The Node image and GitHub Actions are pinned to immutable digests/commit SHAs. Each run uploads a seven-day artifact with the queue and manifest for review; I add confirmed car entries by editing `app.js`.
@@ -30,4 +33,7 @@ The job validates the feed response type, size, UTF-8 encoding, final redirect d
 - `app.js` — catalogue and brand rendering
 - `assets/cars/` — locally stored car photos used by my cards
 - `IMAGE-CREDITS.md` — image sources and credit notes
-- `scripts/scan-news.mjs` — scheduled RSS discovery job
+- `scripts/scan-news.mjs` — RSS discovery scanner
+- `scripts/Dockerfile` — restricted scanner container
+- `.github/workflows/news-discovery.yml` — weekly scan and Pages deployment
+- `data/discovery-queue.json` — candidate articles shown in the Coverage section
